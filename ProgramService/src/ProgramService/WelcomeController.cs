@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ProgramService
 {
-    [Route("/welcome")]
+    [Route("/")]
     public class WelcomeController : ControllerBase
     {
         [HttpGet]
