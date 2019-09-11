@@ -1,0 +1,8 @@
+---
+applications:
+- name: University-Program-Service
+  path: src/ProgramService/bin/Release/netcoreapp2.2/publish/
+  routes:
+  - route: program-service.cfapps.io
+  env:
+    WELCOME_MESSAGE: Welcome to the Cloud Native Workshop!
