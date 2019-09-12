@@ -1,3 +1,8 @@
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ProgramService
@@ -6,12 +11,33 @@ namespace ProgramService
     public class ProgramController : ControllerBase
     {
         private readonly IProgramRepository context;
+        private readonly ICourseClient courseClient;
+        private HttpClient http;
+        private List<CourseInfo> courses = new List<CourseInfo>();
+        
 
-        public ProgramController(IProgramRepository repo)
+        public ProgramController(IProgramRepository repo, ICourseClient courseClient)
         {
             context = repo;
+            this.courseClient = courseClient;         
             context.Initialize();
+            http = new HttpClient
+                {
+                    BaseAddress = new Uri("http://courses-service-nice-gazelle.cfapps.io")
+                };
         }
+
+        public async Task GetAllCourses()
+        {
+            http.DefaultRequestHeaders.Accept.Clear();                       
+            var uri = http.BaseAddress + "/course";          
+            var task = await http.GetAsync(uri);            
+            var result = await task.Content.ReadAsAsync(typeof(List<CourseInfo>));   
+            courses = (List<CourseInfo>)result;        
+            return;
+            //courses = result;
+        }
+        
         [HttpGet]
         public IActionResult List()
         {
@@ -33,8 +59,22 @@ namespace ProgramService
         [HttpPost]
         public IActionResult Create([FromBody] ProgramInfo program)
         {
+            if(!AllCoursesPresent(program.Courses)){
+                return NotFound();
+            }
             var created = context.Create(program);
             return CreatedAtRoute("GetProgram", new { id = created.Id }, created);
+        }
+
+        private bool AllCoursesPresent(List<long> postedCourses)
+        {
+            GetAllCourses().GetAwaiter().GetResult();
+            foreach(var id in postedCourses)
+            {
+                //Check in the courses whether posted courses are listed/exists to validate and proceed.
+                if(courses.Find(p=> p.Found(id)==true)==null) return false;
+            }
+            return true;
         }
 
         [HttpPut("{id}")]
