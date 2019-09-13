@@ -12,8 +12,11 @@ namespace ProgramService
         {
             if (!IsInitialized)
             {
-                db.Add(1, new ProgramInfo { Id = 1, Name = "UG", Courses = new List<long> { 1, 2, 3, 4, 5 } });
-                db.Add(2, new ProgramInfo { Id = 2, Name = "PG", Courses = new List<long> { 6, 7, 8, 9, 10 } });
+                db.Add(1, new ProgramInfo { Id = 1, Name = "UG-Mechanical", Courses = new List<long> { 1, 2 } });
+                db.Add(2, new ProgramInfo { Id = 2, Name = "PG-Mechanical", Courses = new List<long> { 3, 4 } });
+                db.Add(3, new ProgramInfo { Id = 3, Name = "UG-Computer Science", Courses = new List<long> { 5, 6 } });
+                db.Add(4, new ProgramInfo { Id = 4, Name = "PG- Computer Engg", Courses = new List<long> { 7, 8 } });
+                db.Add(5, new ProgramInfo { Id = 5, Name = "PG-Rural Development", Courses = new List<long> { 9, 10,11,12 } });
                 IsInitialized = true;
             }
         }

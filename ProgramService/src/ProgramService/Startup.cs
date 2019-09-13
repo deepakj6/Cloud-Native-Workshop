@@ -28,17 +28,7 @@ namespace ProgramService
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            services.AddSingleton<IProgramRepository, InMemoryProgramRepository>();
-
-             services.AddSingleton<ICourseClient>(sp =>
-            {
-                var httpClient = new HttpClient
-                {
-                    BaseAddress = new Uri(Configuration.GetValue<string>("COURSES_SERVER_ENDPOINT"))
-                };
-
-                return new CourseClient(httpClient);
-            });
+            services.AddSingleton<IProgramRepository, InMemoryProgramRepository>();            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

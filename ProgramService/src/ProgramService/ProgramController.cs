@@ -10,16 +10,14 @@ namespace ProgramService
     [Route("/programs")]
     public class ProgramController : ControllerBase
     {
-        private readonly IProgramRepository context;
-        private readonly ICourseClient courseClient;
+        private readonly IProgramRepository context;        
         private HttpClient http;
         private List<CourseInfo> courses = new List<CourseInfo>();
         
 
-        public ProgramController(IProgramRepository repo, ICourseClient courseClient)
+        public ProgramController(IProgramRepository repo)
         {
-            context = repo;
-            this.courseClient = courseClient;         
+            context = repo;            
             context.Initialize();
             http = new HttpClient
                 {
@@ -33,9 +31,7 @@ namespace ProgramService
             var uri = http.BaseAddress + "/course";          
             var task = await http.GetAsync(uri);            
             var result = await task.Content.ReadAsAsync(typeof(List<CourseInfo>));   
-            courses = (List<CourseInfo>)result;        
-            return;
-            //courses = result;
+            courses = (List<CourseInfo>)result;                       
         }
         
         [HttpGet]
@@ -71,7 +67,7 @@ namespace ProgramService
             GetAllCourses().GetAwaiter().GetResult();
             foreach(var id in postedCourses)
             {
-                //Check in the courses whether posted courses are listed/exists to validate and proceed.
+                //Verify and validate whether posted courses exist and proceed.
                 if(courses.Find(p=> p.Found(id)==true)==null) return false;
             }
             return true;
